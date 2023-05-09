@@ -1,3 +1,5 @@
 import { ControllerUser } from "./ControllerUser";
+import { ControllerProfile } from "./ControllerProfile";
+import { ControllerPost } from "./ControllerPost";
 
-export { ControllerUser };
+export { ControllerUser, ControllerProfile, ControllerPost };

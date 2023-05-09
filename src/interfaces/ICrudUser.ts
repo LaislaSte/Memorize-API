@@ -7,4 +7,6 @@ export interface ICrudUser {
     update(user: User): Promise<User>;
     delete(id: string): Promise<User>;
 
+    // signInWithGoogle():Promise<void>
+    // signIn(email: string, password: string): Promise<User>
 }

@@ -1,24 +1,20 @@
 import { ICrudUser } from "../../interfaces/ICrudUser";
 import { User } from "../bean/User";
-
-
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient()
+import { db } from "./db";
 
 export class DaoUser implements ICrudUser {
 
     async create(user: User): Promise<User> {
         let newUser: User = new User(user);
 
-        await prisma.user.create({
+        await db.user.create({
             data: user
         }).then(async (user) => {
             newUser = user;
-            await prisma.$disconnect()
+            await db.$disconnect()
         }).catch(async (e) => {
             console.error(e)
-            await prisma.$disconnect()
+            await db.$disconnect()
             process.exit(1)
         })
 
@@ -28,12 +24,12 @@ export class DaoUser implements ICrudUser {
     async read(): Promise<User[]> {
         let users: User[] = [];
 
-        await prisma.user.findMany().then(async (result) => {
+        await db.user.findMany().then(async (result) => {
             users = result;
-            await prisma.$disconnect();
+            await db.$disconnect();
         }).catch(async (e) => {
             console.error(e);
-            await prisma.$disconnect();
+            await db.$disconnect();
             process.exit(1);
         })
 
@@ -43,16 +39,16 @@ export class DaoUser implements ICrudUser {
     async readUser(id: string): Promise<User | null> {
         let userReturned: User | null = null;
 
-        await prisma.user.findUnique({
+        await db.user.findUnique({
             where: {
                 id: id
-            }
+            },
         }).then(async (user) => {
             userReturned = user;
-            await prisma.$disconnect()
+            await db.$disconnect()
         }).catch(async (e) => {
             console.error(e)
-            await prisma.$disconnect()
+            await db.$disconnect()
             process.exit(1)
         })
 
@@ -60,18 +56,19 @@ export class DaoUser implements ICrudUser {
     }
 
     async update(user: User): Promise<User> {
-        let userUpdated: User = new User(user);
+        let userUpdated: User = new User({ email: "", name: "" });
 
-        await prisma.user.update({
+        await db.user.update({
             where: {
                 id: user.id
             },
             data: user
-        }).then(async () => {
-            await prisma.$disconnect()
+        }).then(async (result) => {
+            userUpdated = result;
+            await db.$disconnect()
         }).catch(async (e) => {
             console.error(e)
-            await prisma.$disconnect()
+            await db.$disconnect()
             process.exit(1)
         })
 
@@ -81,16 +78,16 @@ export class DaoUser implements ICrudUser {
     async delete(id: string): Promise<User> {
         let userDeleted: User = new User({ email: "", name: "" });
 
-        await prisma.user.delete({
+        await db.user.delete({
             where: {
                 id
             }
         }).then(async (user) => {
             userDeleted = user;
-            await prisma.$disconnect()
+            await db.$disconnect()
         }).catch(async (e) => {
             console.error(e)
-            await prisma.$disconnect()
+            await db.$disconnect()
             process.exit(1)
         })
 

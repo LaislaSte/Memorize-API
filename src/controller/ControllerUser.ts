@@ -42,8 +42,9 @@ export class ControllerUser {
 
     async update(req: Request, res: Response): Promise<Response> {
         try {
-            const { id, name, email } = req.body;
-            const user = new User({ name, email }, id)
+            const { name, email, active } = req.body;
+            const id = req.params.id;
+            const user = new User({ name, email, active }, id)
             const userUpdated = await this.executerUser.update(user);
             return res.status(200).json({ message: "user uptaded sussessfully", userUpdated })
         } catch (error) {
