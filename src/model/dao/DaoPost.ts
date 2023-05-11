@@ -136,6 +136,9 @@ export class DaoPost implements ICrudPost {
                     },
                     {
                         content: { contains: search }
+                    },
+                    {
+                        tag: { contains: search }
                     }
                 ]
             },

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { contPost, contProfile, contUser } from "../executors";
+import { contPost, contProfile, contReview, contUser } from "../executors";
 
 const userRouter = Router();
 
@@ -92,6 +92,28 @@ userRouter.delete("/delete-post/:id", (req, res) => {
 userRouter.get("/filter-post/", (req, res) => {
     contPost.filter(req, res).then((contPost) => {
         return contPost
+    })
+})
+
+//POST REVIEW
+userRouter.post("/create-review", (req, res) => {
+    contReview.create(req, res).then((contReview) => {
+        return contReview
+    })
+})
+userRouter.get("/read-review", (req, res) => {
+    contReview.read(req, res).then((contReview) => {
+        return contReview
+    })
+})
+userRouter.put("/update-review/:id", (req, res) => {
+    contReview.update(req, res).then((contReview) => {
+        return contReview
+    })
+})
+userRouter.delete("/delete-review/:id", (req, res) => {
+    contReview.delete(req, res).then((contReview) => {
+        return contReview
     })
 })
 

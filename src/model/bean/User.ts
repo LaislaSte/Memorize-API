@@ -7,7 +7,6 @@ export class User {
     public email: string;
     public active?: boolean;
 
-    // constructor(props: User) {
     constructor(props: Omit<User, 'id'>, id?: string) {
         this.email = props.email;
         this.name = props.name;
