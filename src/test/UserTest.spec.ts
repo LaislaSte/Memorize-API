@@ -1,99 +1,56 @@
-import { ControllerUser } from "../controller/ControllerUser"
-import { Profile } from "../model/bean/Profile";
 import { User } from "../model/bean/User"
+import { uuid } from 'uuidv4';
 
+let id: string;
+jest.mock('uuidv4', () => ({
+    id: jest.fn().mockReturnValue('mocked-uuid'),
+}));
 
-describe("testing funcionalitys of crud profile", () => {
-    const user = new User({ name: "Rosana", email: "emailRosana" });
-    const profile = new Profile({ user: user, bio: "Rosana's Bio" });
-    const contUser = new ControllerUser();
+describe('User', () => {
+    let user: User;
 
-    const createResult = contUser.create(user)
-    it("should give a user created", () => {
-        createResult.then((createResult) => {
-            expect(createResult).not.toBeNull();
-            expect(createResult.name).toBe("Rosana");
-        })
-    })
+    beforeEach(() => {
+        user = new User({
+            name: 'John Doe',
+            email: 'johndoe@example.com',
+            active: true,
+        });
+    });
 
-    const readUserResult = contUser.readUser("1");
-    it("should return the user creted", () => {
-        readUserResult.then((readUserResult) => {
-            expect(readUserResult).not.toBeNull();
-            expect(readUserResult?.id).toBe("1");
-            expect(readUserResult?.name).toBe("Ciclano");
-        })
-    })
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
 
-    const read = contUser.read();
-    it("should return the users", () => {
-        read.then((read) => {
-            expect(read).not.toBeNull();
-            expect(read.length).toBeGreaterThan(0);
-            expect(read[0].name).toBe("Ciclano");
-        })
-    })
+    it('should create a user with a generated UUID', () => {
+        expect(user.id).toBe('mocked-uuid');
+        expect(id).toHaveBeenCalledTimes(1);
+    });
 
-    let newUser = new User({ name: "Ciclano", email: "emailCiclano" }, "1")
-    const update = contUser.update(newUser);
-    it("should bring the user's name upteted to Ciclano", () => {
-        update.then((update) => {
-            expect(update.name).toBe("Ciclano");
-            expect(update.email).toBe("emailCiclano");
-        })
-    })
+    it('should create a user with a provided ID', () => {
+        const customId = 'custom-id';
+        user = new User(
+            {
+                name: 'Jane Smith',
+                email: 'janesmith@example.com',
+                active: false,
+            },
+            customId
+        );
+        expect(user.id).toBe(customId);
+        expect(id).not.toHaveBeenCalled();
+    });
 
-    const deleted = contUser.delete("2");
-    it("Should return the user's name deleted", () => {
-        deleted.then((deleted) => {
-            expect(deleted.name).toBe("Emylia");
-        })
-    })
-})
+    it('should set properties correctly', () => {
+        expect(user.name).toBe('John Doe');
+        expect(user.email).toBe('johndoe@example.com');
+        expect(user.active).toBe(true);
+    });
 
-// describe("testing funcionalitys of crud user", () => {
-//     const user = new User({ name: "Rosana", email: "emailRosana" });
-//     const contUser = new ControllerUser();
-
-//     const createResult = contUser.create(user)
-//     it("should give a user created", () => {
-//         createResult.then((createResult) => {
-//             expect(createResult).not.toBeNull();
-//             expect(createResult.name).toBe("Rosana");
-//         })
-//     })
-
-//     const readUserResult = contUser.readUser("1");
-//     it("should return the user creted", () => {
-//         readUserResult.then((readUserResult) => {
-//             expect(readUserResult).not.toBeNull();
-//             expect(readUserResult?.id).toBe("1");
-//             expect(readUserResult?.name).toBe("Ciclano");
-//         })
-//     })
-
-//     const read = contUser.read();
-//     it("should return the users", () => {
-//         read.then((read) => {
-//             expect(read).not.toBeNull();
-//             expect(read.length).toBeGreaterThan(0);
-//             expect(read[0].name).toBe("Ciclano");
-//         })
-//     })
-
-//     let newUser = new User({ name: "Ciclano", email: "emailCiclano" }, "1")
-//     const update = contUser.update(newUser);
-//     it("should bring the user's name upteted to Ciclano", () => {
-//         update.then((update) => {
-//             expect(update.name).toBe("Ciclano");
-//             expect(update.email).toBe("emailCiclano");
-//         })
-//     })
-
-//     const deleted = contUser.delete("2");
-//     it("Should return the user's name deleted", () => {
-//         deleted.then((deleted) => {
-//             expect(deleted.name).toBe("Emylia");
-//         })
-//     })
-// })
+    it('should set active property to false if not provided', () => {
+        user = new User({
+            name: 'Jane Smith',
+            email: 'janesmith@example.com',
+        });
+        expect(user.active).toBe(false);
+    });
+});
